@@ -14,6 +14,7 @@ class CtrlPersona extends Controlador{
             echo "Usuario no encontrado";
         }else {
             var_dump($data['data']);
+            header('location: ?ctrl=CtrlTrabajador&accion=validar&id='.$data['data'][0]['idpersonas']);
         }
         
     }
