@@ -1,17 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estados</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-</head>
-<body>
-    <h1>Estados</h1>
+    <h1><?=$titulo?></h1>
 
-    <a href="?ctrl=CtrlEstado&accion=nuevo">Nuevo</a>
-
+    <a href="#" class="btn btn-primary nuevo">
+        <i class="fa fa-plus-circle"></i> 
+        Insertar Nuevo
+    </a>
+    
     <table class="table table-striped table-hover">
         <tr>
             <th>Id</th>
@@ -25,9 +18,14 @@
         <tr>
             <td><?=$d['idestados']?></td>
             <td><?=$d['nombre']?></td>
-            
-            <td><a href="?ctrl=CtrlEstado&accion=editar&id=<?=$d['idestados']?>">Editar</a></td>
-            <td><a href="?ctrl=CtrlEstado&accion=eliminar&id=<?=$d['idestados']?>">Eliminar</a></td>
+
+            <td>
+                <a data-id="<?=$d["idestados"]?>" class="editar" href="#">
+                    <i class="bi bi-pencil-square"></i> Editar </a>
+                / 
+                <a data-id="<?=$d["idestados"]?>" data-nombre="<?=$d["nombre"]?>" class="eliminar" href="#">
+                    <i class="bi bi-trash"></i> Eliminar </a>
+                </td>
             
         </tr>
     
@@ -38,5 +36,43 @@
     </table>
     <br>
     <a href="?">Retornar</a>
-</body>
-</html>
+
+    <!-- Modal Formulario - Nuevo / Editar -->
+<div class="modal fade" id="modal-form" role="dialog">
+    <div class="modal-dialog">
+ 
+     <!-- Modal content-->
+     <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title"></h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" id="body-form">
+    
+        </div>
+        
+     </div>
+    </div>
+</div>
+<!-- Modal Eliminar -->
+<div class="modal fade" id="modal-eliminar" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="frm-eliminar"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="body-eliminar">
+                <div class="text-center">
+                    <h5>¿Estas seguro que deseas seguir con la eliminación?</h5>
+                    <h5 class="reg-eliminacion">Registro: </h5>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">            
+                <button type="button" class="btn btn-secundary" data-dismiss="modal">Cancelar</button>
+                <a type="button" class="btn btn-danger" id="btn-confirmar" href="" data-id="">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>

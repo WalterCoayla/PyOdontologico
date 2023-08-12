@@ -1,10 +1,11 @@
 <?php
+session_start();
 require_once './core/Controlador.php';
 require_once './modelo/Estado.php';
 class CtrlEstado extends Controlador
 {
     public function index(){
-
+        $this->verificarLogin();
         $this->listar();
 
     }
@@ -12,12 +13,12 @@ class CtrlEstado extends Controlador
         
         $id = $_GET['id'];
         # echo "Editando....".$id;
-        $obj= new Estado();
+        $obj= new Estado($id);
 
-        $miObj = $obj->getBy('id',$id);
+        $miObj = $obj->getOne();
         # var_dump($miObj);exit;
         $datos = array(
-            'cargo'=>$miObj['data'][0]
+            'data'=>$miObj['data'][0]
         );
         # var_dump($datos);exit;
         $this->mostrar('estados/formulario.php',$datos);
@@ -25,9 +26,8 @@ class CtrlEstado extends Controlador
     public function guardar(){
         $id=$_POST['id'];
         $nombre=$_POST['nombre'];
-        $descripcion=$_POST['descripcion'];
-
-        $obj= new Cargo($id, $nombre,$descripcion);
+        
+        $obj= new Estado($id, $nombre);
 
         if ($id==''){
             $respuesta = $obj->nuevo();
@@ -44,7 +44,7 @@ class CtrlEstado extends Controlador
     public function eliminar(){
 
         $id = $_GET['id'];
-        $obj= new Cargo($id);
+        $obj= new Estado($id);
 
         $respuesta = $obj->eliminar();
 
@@ -56,13 +56,28 @@ class CtrlEstado extends Controlador
 
         $obj= new Estado();
 
-        $data = $obj->listar();
-        
-        $datos = array(
-            'data'=>$data['data']
-        );
+        $respuesta = $obj->listar();
 
-        $this->mostrar('estados/mostrar.php',$datos);
+        $msg = $respuesta['msg'];
+        # var_dump($respuesta);exit;
+        $datos = [
+                'titulo'=>"Estados",
+                'data'=>$respuesta['data']
+            ];
+        $contenido=$this->mostrar('estados/mostrar.php',$datos,true);
+        $data = [
+            'titulo'=>'Estados',
+            'contenido'=>$contenido,
+            'msg'=>$msg
+        ];
 
+        $this->mostrar('template.php',$data);
+
+    }
+    private function verificarLogin(){
+        if (!isset($_SESSION['usuario'])){
+            header("Location: ?");
+            exit();
+        }
     }
 }

@@ -16,6 +16,9 @@ class Estado extends Modelo{
     public function listar(){
         return $this->getAll();
     }
+    public function getOne(){
+        return $this->getBy('idestados',$this->_id);
+    }
     public function eliminar(){
         return $this->deleteBy('idestados',$this->_id);
     }

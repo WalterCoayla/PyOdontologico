@@ -14,4 +14,5 @@ class CtrlPrincipal extends Controlador{
 
         $this->mostrar('personas/login.php',$datos);
     }
+
 }

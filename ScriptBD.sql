@@ -7,6 +7,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema dental99
 -- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `dental99` ;
 
 -- -----------------------------------------------------
 -- Schema dental99
@@ -20,10 +21,23 @@ USE `dental99` ;
 DROP TABLE IF EXISTS `dental99`.`estados` ;
 
 CREATE TABLE IF NOT EXISTS `dental99`.`estados` (
-  `idestados` INT NOT NULL,
+  `idestados` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(30) NULL,
   PRIMARY KEY (`idestados`))
 ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dental99`.`sexos`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `dental99`.`sexos` ;
+
+CREATE TABLE IF NOT EXISTS `dental99`.`sexos` (
+  `idsexos` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(20) NULL,
+  PRIMARY KEY (`idsexos`))
+ENGINE = InnoDB
+COMMENT = '	';
 
 
 -- -----------------------------------------------------
@@ -38,18 +52,24 @@ CREATE TABLE IF NOT EXISTS `dental99`.`personas` (
   `dni` VARCHAR(10) NULL,
   `direccion` VARCHAR(45) NULL,
   `fecha_nacimiento` DATE NULL,
-  `sexo` VARCHAR(10) NULL,
   `telefono` VARCHAR(12) NULL,
   `correo` VARCHAR(76) NULL,
   `usuario` VARCHAR(45) NULL,
   `clave` VARCHAR(40) NULL,
   `fecha_alta` DATETIME NULL,
   `estados_idestados` INT NOT NULL,
+  `idsexos` INT NOT NULL,
   PRIMARY KEY (`idpersonas`),
   INDEX `fk_personas_estados1_idx` (`estados_idestados` ASC) ,
+  INDEX `fk_personas_sexos1_idx` (`idsexos` ASC) ,
   CONSTRAINT `fk_personas_estados1`
     FOREIGN KEY (`estados_idestados`)
     REFERENCES `dental99`.`estados` (`idestados`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_personas_sexos1`
+    FOREIGN KEY (`idsexos`)
+    REFERENCES `dental99`.`sexos` (`idsexos`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -73,8 +93,8 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `dental99`.`personal` ;
 
 CREATE TABLE IF NOT EXISTS `dental99`.`personal` (
-  `colegiatura` VARCHAR(9) NULL,
   `idpersonas` INT NOT NULL,
+  `colegiatura` VARCHAR(9) NULL,
   `idtipo` INT NOT NULL,
   PRIMARY KEY (`idpersonas`),
   INDEX `fk_personal_tipo_personal1_idx` (`idtipo` ASC) ,
@@ -443,6 +463,28 @@ COMMIT;
 
 
 -- -----------------------------------------------------
+-- Data for table `dental99`.`sexos`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `dental99`;
+INSERT INTO `dental99`.`sexos` (`idsexos`, `nombre`) VALUES (1, 'FEMENINO');
+INSERT INTO `dental99`.`sexos` (`idsexos`, `nombre`) VALUES (2, 'MASCULINO');
+INSERT INTO `dental99`.`sexos` (`idsexos`, `nombre`) VALUES (3, 'PREFIERO NO DECIRLO');
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Data for table `dental99`.`personas`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `dental99`;
+INSERT INTO `dental99`.`personas` (`idpersonas`, `nombre`, `apellido`, `dni`, `direccion`, `fecha_nacimiento`, `telefono`, `correo`, `usuario`, `clave`, `fecha_alta`, `estados_idestados`, `idsexos`) VALUES (1, 'Carlitos', 'Flores', '12345678', 'Av. Bolivar 123', '2000/05/10', '95214578', 'carlitos@gmail.com', 'carlitos', '123456', '2023/08/08', 1, 2);
+
+COMMIT;
+
+
+-- -----------------------------------------------------
 -- Data for table `dental99`.`tipo_personal`
 -- -----------------------------------------------------
 START TRANSACTION;
@@ -455,12 +497,22 @@ COMMIT;
 
 
 -- -----------------------------------------------------
+-- Data for table `dental99`.`personal`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `dental99`;
+INSERT INTO `dental99`.`personal` (`idpersonas`, `colegiatura`, `idtipo`) VALUES (1, 'A-999', 1);
+
+COMMIT;
+
+
+-- -----------------------------------------------------
 -- Data for table `dental99`.`tipo_paciente`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `dental99`;
-INSERT INTO `dental99`.`tipo_paciente` (`idtipo_paciente`, `tipo`, `cantidad_dientes`) VALUES (1, 'niños', 20);
-INSERT INTO `dental99`.`tipo_paciente` (`idtipo_paciente`, `tipo`, `cantidad_dientes`) VALUES (2, 'adulto', 32);
+INSERT INTO `dental99`.`tipo_paciente` (`idtipo_paciente`, `tipo`, `cantidad_dientes`) VALUES (1, 'NIÑOS', 20);
+INSERT INTO `dental99`.`tipo_paciente` (`idtipo_paciente`, `tipo`, `cantidad_dientes`) VALUES (2, 'ADULTO', 32);
 
 COMMIT;
 
@@ -470,8 +522,8 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `dental99`;
-INSERT INTO `dental99`.`formas_pagos` (`idpagos`, `forma`) VALUES (1, 'Efectivo');
-INSERT INTO `dental99`.`formas_pagos` (`idpagos`, `forma`) VALUES (2, 'Tarjeta');
+INSERT INTO `dental99`.`formas_pagos` (`idpagos`, `forma`) VALUES (1, 'EFECTIVO');
+INSERT INTO `dental99`.`formas_pagos` (`idpagos`, `forma`) VALUES (2, 'TARJETA');
 
 COMMIT;
 
@@ -498,7 +550,4 @@ INSERT INTO `dental99`.`tipo_comprobantes` (`idtipo_comprobantes`, `tipo`, `ulti
 INSERT INTO `dental99`.`tipo_comprobantes` (`idtipo_comprobantes`, `tipo`, `ultimo_numero`) VALUES (3, 'RECIBO', '1');
 
 COMMIT;
-
-
-
 
